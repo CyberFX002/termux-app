@@ -1,0 +1,1 @@
+module.exports=function(io){io.on('connection',socket=>{socket.emit('notification','KFC STREAMS realtime channel connected');socket.on('join-match',id=>socket.join(`match:${id}`));socket.on('chat',msg=>io.to(`match:${msg.matchId}`).emit('chat',msg))});setInterval(()=>io.emit('score:update',{matchId:'match-1',score:'2-1',event:'VAR check complete'}),15000)};

@@ -1,0 +1,1 @@
+export default function sitemap(){return['','live/match-1','fixtures','scores','highlights','leagues','news','pricing'].map(p=>({url:`${process.env.NEXT_PUBLIC_SITE_URL||'https://kfcstreams.example.com'}/${p}`,lastModified:new Date()}))}

@@ -1,0 +1,1 @@
+const fs=require('fs');['package.json','web/app/page.jsx','backend/src/server.js','database/schema.sql','docker-compose.yml'].forEach(f=>{if(!fs.existsSync(f))throw new Error(`${f} missing`)});console.log('smoke ok');

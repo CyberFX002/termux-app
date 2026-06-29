@@ -1,0 +1,1 @@
+const jwt=require('jsonwebtoken');module.exports=(roles=[])=>function(req,res,next){const token=(req.headers.authorization||'').replace('Bearer ','');try{req.user=jwt.verify(token,process.env.JWT_SECRET||'dev-secret');if(roles.length&&!roles.includes(req.user.role))return res.status(403).json({error:'Forbidden'});next()}catch{return res.status(401).json({error:'Unauthorized'})}};

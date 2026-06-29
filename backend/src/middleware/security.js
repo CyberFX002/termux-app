@@ -1,0 +1,2 @@
+const helmet=require('helmet'),cors=require('cors'),rateLimit=require('express-rate-limit'),compression=require('compression');
+module.exports=(app)=>{app.use(helmet({crossOriginResourcePolicy:{policy:'cross-origin'}}));app.use(cors({origin:(process.env.CORS_ORIGIN||'http://localhost:3000').split(','),credentials:true}));app.use(rateLimit({windowMs:15*60*1000,limit:600,standardHeaders:true,legacyHeaders:false}));app.use(compression());};
