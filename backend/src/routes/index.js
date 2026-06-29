@@ -1,0 +1,10 @@
+const express=require('express'),bcrypt=require('bcryptjs'),jwt=require('jsonwebtoken'),multer=require('multer');const auth=require('../middleware/auth');const StreamService=require('../services/StreamService');const router=express.Router();const upload=multer({dest:'uploads/',limits:{fileSize:25*1024*1024}});
+const ok=(name)=>(req,res)=>res.json({resource:name,filters:req.query,data:[],message:`${name} endpoint ready for provider-backed data`});
+router.post('/auth/register',async(req,res)=>{const hash=await bcrypt.hash(req.body.password||'',12);res.status(201).json({user:{email:req.body.email,name:req.body.name},passwordHashCreated:!!hash,verificationRequired:true})});
+router.post('/auth/login',async(req,res)=>res.json({token:jwt.sign({sub:'demo-user',role:'user',email:req.body.email},process.env.JWT_SECRET||'dev-secret',{expiresIn:'7d'}),remember:!!req.body.remember}));
+router.post('/auth/forgot-password',(req,res)=>res.json({sent:true}));router.post('/auth/reset-password',(req,res)=>res.json({reset:true}));router.post('/auth/otp/verify',(req,res)=>res.json({verified:true}));
+['matches','fixtures','teams','players','leagues','streams','highlights','news','payments','subscriptions','notifications','watch-history','favorites','advertisements','comments'].forEach(r=>router.get(`/${r}`,ok(r)));
+router.post('/streams/:id/token',auth(),(req,res)=>res.json({token:StreamService.signStreamUrl(req.params.id,req.user.sub),drm:StreamService.drmConfig()}));
+router.post('/uploads',auth(),upload.single('file'),(req,res)=>res.json({file:req.file?.filename}));
+router.use('/admin',auth(['admin']));['analytics','users','matches','streams','teams','players','leagues','competitions','payments','ads','news','notifications','reports','roles','permissions','settings'].forEach(r=>router.get(`/admin/${r}`,ok(`admin/${r}`)));
+module.exports=router;
